@@ -1,5 +1,6 @@
 #! /bin/bash
 
+psql --username=freecodecamp --dbname=salon -c "TRUNCATE customers, appointments, services;"
 psql --username=freecodecamp --dbname=salon -c "CREATE TABLE customers(customer_id SERIAL PRIMARY KEY);"
 psql --username=freecodecamp --dbname=salon -c "CREATE TABLE appointments(appointment_id SERIAL PRIMARY KEY);"
 psql --username=freecodecamp --dbname=salon -c "CREATE TABLE services(service_id SERIAL PRIMARY KEY);"
@@ -48,6 +49,14 @@ readService() {
   else
     echo "What's your phone number?"
     read CUSTOMER_PHONE
+    phoneQuery="$($PSQL "SELECT name FROM customers WHERE phone='$CUSOMER_PHONE'")"
+    echo $phoneQuery | while IFS=" " read title name rows paren
+    do
+      if [[ $name == "------" ]]
+      then
+        echo "Phone number not recognized. What is your name?"
+      fi
+    done
   fi
  
 }
