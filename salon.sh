@@ -1,22 +1,22 @@
 #! /bin/bash
 
-psql --username=freecodecamp --dbname=salon -c "CREATE TABLE customers(customer_id SERIAL PRIMARY KEY);"
-psql --username=freecodecamp --dbname=salon -c "CREATE TABLE appointments(appointment_id SERIAL PRIMARY KEY);"
-psql --username=freecodecamp --dbname=salon -c "CREATE TABLE services(service_id SERIAL PRIMARY KEY);"
-psql --username=freecodecamp --dbname=salon -c "ALTER TABLE appointments ADD COLUMN customer_id INT REFERENCES customers(customer_id);"
-psql --username=freecodecamp --dbname=salon -c "ALTER TABLE appointments ADD COLUMN service_id INT REFERENCES services(service_id);"
-psql --username=freecodecamp --dbname=salon -c "ALTER TABLE customers ADD COLUMN phone VARCHAR(20) UNIQUE;"
-psql --username=freecodecamp --dbname=salon -c "ALTER TABLE customers ADD COLUMN name VARCHAR(25);"
-psql --username=freecodecamp --dbname=salon -c "ALTER TABLE services ADD COLUMN name VARCHAR(25) UNIQUE;"
-psql --username=freecodecamp --dbname=salon -c "ALTER TABLE appointments ADD COLUMN time VARCHAR(5);"
-psql --username=freecodecamp --dbname=salon -c "INSERT INTO services(name) VALUES('cut'), ('color'), ('perm'), ('style'), ('trim');"
+PSQL="psql --username=freecodecamp --dbname=salon -c"
+
+create_customers=$($PSQL "CREATE TABLE customers(customer_id SERIAL PRIMARY KEY);")
+create_appointments=$($PSQL "CREATE TABLE appointments(appointment_id SERIAL PRIMARY KEY);")
+create_services=$($PSQL "CREATE TABLE services(service_id SERIAL PRIMARY KEY);")
+add_foreign_customer_key_to_appointments=$($PSQL "ALTER TABLE appointments ADD COLUMN customer_id INT REFERENCES customers(customer_id);")
+add_foreign_service_key_to_appointments=$($PSQL "ALTER TABLE appointments ADD COLUMN service_id INT REFERENCES services(service_id);")
+add_phone_to_customers=$($PSQL "ALTER TABLE customers ADD COLUMN phone VARCHAR(20) UNIQUE;")
+add_name_to_customers=$($PSQL "ALTER TABLE customers ADD COLUMN name VARCHAR(25);")
+add_name_to_services=$($PSQL "ALTER TABLE services ADD COLUMN name VARCHAR(25) UNIQUE;")
+add_time_to_appointments=$($PSQL "ALTER TABLE appointments ADD COLUMN time VARCHAR(5);")
+insert_into_services=$($PSQL "INSERT INTO services(name) VALUES('cut'), ('color'), ('perm'), ('style'), ('trim');")
 
 
 echo -e "Welcome to My Salon, how can I help you?\n"
 
 readService() {
-
-  PSQL="psql --username=freecodecamp --dbname=salon -c"
 
   services_list=$($PSQL "SELECT * FROM services;")
   services_count=$($PSQL "SELECT COUNT(service_id) FROM services;")
@@ -69,16 +69,16 @@ readService() {
     do
       echo -e "\nWhat time would you like your $name, $CUSTOMER_NAME?"
     done
-    read APPOINTMENT_TIME
+    read SERVICE_TIME
 
     echo $SERVICE | while read title hyphens name num close
     do
-      echo -e "\nI have put you down for a $name at $APPOINTMENT_TIME, $CUSTOMER_NAME."
+      echo -e "\nI have put you down for a $name at $SERVICE_TIME, $CUSTOMER_NAME."
     done
     CUSTOMER_ID=$($PSQL "SELECT customer_id FROM customers WHERE phone='$CUSTOMER_PHONE'")
     echo $CUSTOMER_ID | while read title hyphens id num close
     do
-      SCHEDULE_APPOINTMENT=$($PSQL "INSERT INTO appointments(customer_id, service_id, time) VALUES($id, $SERVICE_ID_SELECTED, '$APPOINTMENT_TIME')")
+      SCHEDULE_APPOINTMENT=$($PSQL "INSERT INTO appointments(customer_id, service_id, time) VALUES($id, $SERVICE_ID_SELECTED, '$SERVICE_TIME')")
     done
   fi
  
