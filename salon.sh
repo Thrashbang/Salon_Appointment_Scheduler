@@ -10,7 +10,7 @@ add_foreign_service_key_to_appointments=$($PSQL "ALTER TABLE appointments ADD CO
 add_phone_to_customers=$($PSQL "ALTER TABLE customers ADD COLUMN phone VARCHAR(20) UNIQUE;")
 add_name_to_customers=$($PSQL "ALTER TABLE customers ADD COLUMN name VARCHAR(25);")
 add_name_to_services=$($PSQL "ALTER TABLE services ADD COLUMN name VARCHAR(25) UNIQUE;")
-add_time_to_appointments=$($PSQL "ALTER TABLE appointments ADD COLUMN time VARCHAR(5);")
+add_time_to_appointments=$($PSQL "ALTER TABLE appointments ADD COLUMN time VARCHAR(10);")
 insert_into_services=$($PSQL "INSERT INTO services(name) VALUES('cut'), ('color'), ('perm'), ('style'), ('trim');")
 
 
@@ -56,8 +56,10 @@ readService() {
     read CUSTOMER_PHONE
     CUSTOMER_NAME=$($PSQL "SELECT name FROM customers WHERE phone='$CUSTOMER_PHONE';")
 
-    if [[ -z$phoneQuery ]]
+    if [[ -z $CUSTOMER_NAME ]]
     then
+      MY_VAR=5   
+    else
       echo -e "\nI don't have a record for that phone number, what's your name?"
       read CUSTOMER_NAME
       ADD_CUSTOMER=$($PSQL "INSERT INTO customers(phone, name) VALUES('$CUSTOMER_PHONE', '$CUSTOMER_NAME');")
