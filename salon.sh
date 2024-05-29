@@ -56,14 +56,17 @@ readService() {
     read CUSTOMER_PHONE
     CUSTOMER_NAME=$($PSQL "SELECT name FROM customers WHERE phone='$CUSTOMER_PHONE';")
 
-    if [[ -z $CUSTOMER_NAME ]]
-    then
-      MY_VAR=5   
-    else
-      echo -e "\nI don't have a record for that phone number, what's your name?"
-      read CUSTOMER_NAME
-      ADD_CUSTOMER=$($PSQL "INSERT INTO customers(phone, name) VALUES('$CUSTOMER_PHONE', '$CUSTOMER_NAME');")
-    fi
+    read $CUSTOMER_NAME | while IFS=" " title read_name number parenthesis
+    do
+      if [[ $read_name == "-----" ]]
+      then
+        echo "Not recognized."  
+      else
+        echo -e "\nI don't have a record for that phone number, what's your name?"
+        read CUSTOMER_NAME
+        ADD_CUSTOMER=$($PSQL "INSERT INTO customers(phone, name) VALUES('$CUSTOMER_PHONE', '$CUSTOMER_NAME');")
+      fi
+    done
 
     SERVICE=$($PSQL "SELECT name FROM services WHERE service_id=$SERVICE_ID_SELECTED;")
 
