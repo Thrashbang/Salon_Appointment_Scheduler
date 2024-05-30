@@ -56,14 +56,12 @@ readService() {
     read CUSTOMER_PHONE
     CUSTOMER_NAME=$($PSQL "SELECT name FROM customers WHERE phone='$CUSTOMER_PHONE';")
 
-    read $CUSTOMER_NAME | while IFS=" " title read_name number parenthesis
+    echo $CUSTOMER_NAME | while IFS=" " read title read_name number parenthesis
     do
-      if [[ $read_name == "-----" ]]
+      if [[ "$read_name" == "------" ]]
       then
-        echo "Not recognized."  
-      else
         echo -e "\nI don't have a record for that phone number, what's your name?"
-        read CUSTOMER_NAME
+        read $CUSTOMER_NAME
         ADD_CUSTOMER=$($PSQL "INSERT INTO customers(phone, name) VALUES('$CUSTOMER_PHONE', '$CUSTOMER_NAME');")
       fi
     done
@@ -76,7 +74,7 @@ readService() {
     done
     read SERVICE_TIME
 
-    echo $SERVICE | while read title hyphens name num close
+    read $SERVICE | while IFS=" " title hyphens name num close
     do
       echo -e "\nI have put you down for a $name at $SERVICE_TIME, $CUSTOMER_NAME."
     done
