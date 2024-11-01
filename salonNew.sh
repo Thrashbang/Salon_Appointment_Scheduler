@@ -1,21 +1,17 @@
 !#/bin/bash
 
-  echo "$services_list" | while read id pipe service
-  do
-    if [[ $service == "cut" ]]
-    then
-      echo -e "$id) "$service""
-    elif [[ $service == "color" ]]
-    then
-      echo -e "$id) "$service""
-    elif [[ $service == "perm" ]]
-    then
-      echo -e "$id) "$service""
-    elif [[ $service == "style" ]]
-    then
-      echo -e "$id) "$service""
-      elif [[ $service == "trim" ]]
-    then
-      echo -e "$id) "$service""
-    fi
-  done
+echo $(PSQL --username=freecodecamp --dbname=salon -c "SELECT * FROM services") | while read id pipe service
+do
+  if [[ $service == "Haircut" ]]
+  then
+    echo -e "$id) "$service""
+  elif [[ $service == "Hair Coloring" ]]
+  then
+    echo -e "$id) "$service""
+  elif [[ $service == "Trim" ]]
+  then
+    echo -e "$id) "$service""
+  fi
+done
+
+read $
