@@ -29,3 +29,21 @@ readService() {
   fi
 
 }
+
+readPhone() {
+
+  echo -e "\nWhat's your phone number?"
+
+  read PHONE_NUMBER
+
+  echo $(PSQL --username=freecodecamp --dbname=salon -c "SELECT name FROM customers WHERE phone='$CUSTOMER_PHONE'") | while IFS=" " read title name number parenthesis
+  do
+    if [[ "$name" == "------" ]]
+    then
+      echo -e "\nI don't have a record for that phone number, what's your name?"
+      read $CUSTOMER_NAME
+      $(PSQL --username=freecodecamp --dbname=salon -c "INSERT INTO customers(phone, name) VALUES('$CUSTOMER_PHONE', '$CUSTOMER_NAME')")
+    fi
+  done
+
+}
